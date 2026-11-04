@@ -1,0 +1,47 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 0.15s ease;
+}
+
+.sm {
+  padding: 8px 16px;
+  font: var(--text-body-md-strong);
+}
+
+.xl {
+  padding: 12px 24px;
+  font: var(--text-body-lg-strong);
+}
+
+.primary {
+  background: var(--colour-background-button-primary);
+  color: var(--colour-text-inverse);
+}
+.primary:hover {
+  filter: brightness(0.94);
+}
+
+.tertiary {
+  background: transparent;
+  color: var(--colour-text-brand-darkblue);
+}
+.tertiary:hover {
+  background: var(--colour-background-surface-card);
+}
+
+/* Inherits text colour so it reads white on the hero. */
+.tertiary_grey {
+  background: transparent;
+  color: inherit;
+}
+.tertiary_grey:hover {
+  background: var(--hero-glass-badge-bg);
+}

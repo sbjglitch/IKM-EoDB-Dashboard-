@@ -1,0 +1,35 @@
+.waffle {
+  display: grid;
+  grid-template-rows: repeat(var(--rows), var(--square));
+  grid-auto-columns: var(--square);
+  grid-auto-flow: column;
+  gap: var(--gap);
+  max-width: 100%;
+}
+.square {
+  width: var(--square);
+  height: var(--square);
+  border-radius: var(--radius-square);
+}
+.approved {
+  background: var(--colour-brand-darkblue-500);
+}
+.returned {
+  background: var(--colour-blue-600);
+}
+.rejected {
+  background: var(--colour-red-600);
+}
+.remaining,
+.empty {
+  background: var(--colour-border-strong);
+}
+
+/* Narrow screens: let the squares wrap to the available width instead of scrolling the page. */
+@media (max-width: 700px) {
+  .waffle {
+    grid-template-rows: none;
+    grid-auto-flow: row;
+    grid-template-columns: repeat(auto-fill, var(--square));
+  }
+}

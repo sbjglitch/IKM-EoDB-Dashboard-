@@ -1,0 +1,84 @@
+/* K-Suite tokens (CLAUDE.md §4). Component CSS must only reference these variables. */
+:root {
+  /* Colours */
+  --colour-text-default: #232f50;
+  --colour-text-subtle: #7580a1;
+  --colour-text-secondary: #5c6e93;
+  --colour-text-brand-darkblue: #09327b;
+  --colour-text-brand-pink: #e83a7a;
+  --colour-text-inverse: #ffffff;
+  --colour-icon-subtle: #7580a1;
+  --colour-icon-brand-lightblue: #00b2eb;
+  --colour-icon-brand-darkblue: #1c4192;
+  --colour-icon-success: #1ebe72;
+  --colour-border-success: #1ebe72;
+  --colour-red-500: #f6505a;
+  --colour-red-600: #cb4049;
+  --colour-background-surface-default: #f1f5f8;
+  --colour-background-surface-white: #ffffff;
+  --colour-background-surface-card: #f6f9fb;
+  --colour-border-default: #e8eff4;
+  --colour-border-table: #dfe7ef;
+  --colour-border-strong: #d6e3ec;
+  --colour-background-button-primary: #e83a7a;
+  --colour-brand-darkblue-500: #0c3080;
+  --colour-blue-600: #008ebc;
+  --colour-lightblue-200: #99e0f7;
+  --colour-lightblue-150: #b2e8f9;
+  --colour-lightblue-100: #ccf0fb;
+  --colour-darkblue-50: #e7ecf6;
+  --colour-gray-650: #a2a7b4;
+  --colour-yellow-50: #fef8ec;
+  --colour-yellow-700: #8a6416;
+  --colour-ice-100: #f1f5f8;
+  --colour-table-header-bg: #09327b;
+  --colour-focus-ring: rgba(0, 178, 235, 0.35);
+
+  /* Hero */
+  --gradient-hero: linear-gradient(90deg, #012e86 0%, #398ad0 100%);
+  --hero-photo-opacity: 0.21;
+  --hero-glass-badge-bg: rgba(255, 255, 255, 0.08);
+  --hero-glass-badge-border: rgba(255, 255, 255, 0.16);
+  --hero-glass-tile-bg: rgba(255, 255, 255, 0.05);
+  --hero-glass-tile-border: rgba(232, 239, 244, 0.18);
+  --colour-white-separator: #ffffff;
+
+  /* Typography */
+  --font-family: 'Manrope', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --text-heading-h3-strong: 700 28px/36px var(--font-family);
+  --text-heading-h5-strong: 700 20px/26px var(--font-family);
+  --text-body-xl-extra-strong: 700 20px/26px var(--font-family);
+  --text-body-lg-strong: 600 16px/24px var(--font-family);
+  --text-body-lg-default: 500 16px/24px var(--font-family);
+  --text-label-lg-strong: 600 16px/24px var(--font-family);
+  --text-body-md-strong: 600 14px/20px var(--font-family);
+  --text-body-md-default: 500 14px/20px var(--font-family);
+  --text-label-md-strong: 600 14px/20px var(--font-family);
+  --text-label-md-default: 500 14px/20px var(--font-family);
+  --text-label-sm-strong: 700 12px/16px var(--font-family);
+  --text-label-sm-default: 600 12px/16px var(--font-family);
+  --text-label-sm-light: 400 12px/16px var(--font-family);
+  --text-hero-headline: 800 32px/1.2 var(--font-family);
+  --text-hero-tile-value: 800 30px/1.1 var(--font-family);
+  --text-outcome-headline: 800 40px/1 var(--font-family);
+
+  /* Spacing */
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 20px;
+  --space-2xl: 24px;
+  --space-3xl: 32px;
+  --page-padding-x: 32px;
+  --section-gap: 24px;
+
+  /* Radius */
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-md: 8px;
+  --radius-pill: 500px;
+  --radius-square: 3px;
+
+  /* Shadow */
+  --shadow-xs: 0 1px 2px rgba(10, 13, 18, 0.05);
+  --shadow-raised: 0 2px 4px rgba(10, 13, 18, 0.06), 0 4px 8px rgba(10, 13, 18, 0.1);
+}

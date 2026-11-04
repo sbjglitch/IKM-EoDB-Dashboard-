@@ -1,0 +1,22 @@
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--colour-border-default);
+  font: var(--text-label-md-default);
+  color: var(--colour-text-secondary);
+}
+.links {
+  display: flex;
+  gap: var(--space-2xl);
+}
+.links a {
+  text-decoration: none;
+  border-radius: 4px;
+}
+.links a:hover {
+  text-decoration: underline;
+}

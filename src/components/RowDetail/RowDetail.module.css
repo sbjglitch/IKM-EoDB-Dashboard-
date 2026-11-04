@@ -1,0 +1,30 @@
+.detail {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  padding: 14px 24px 18px 48px;
+}
+.outcomes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-lg);
+  min-width: 0;
+}
+.label {
+  font: var(--text-label-sm-strong);
+  color: var(--colour-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.summary {
+  font: var(--text-body-md-strong);
+  color: var(--colour-text-default);
+}
+.note {
+  flex-basis: 100%;
+  font: var(--text-label-sm-light);
+  color: var(--colour-text-secondary);
+}

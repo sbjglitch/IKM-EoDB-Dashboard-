@@ -1,0 +1,15 @@
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  font: var(--text-label-sm-strong);
+  white-space: nowrap;
+}
+.warning {
+  background: var(--colour-yellow-50);
+  color: var(--colour-yellow-700);
+}
+.neutral {
+  background: var(--colour-ice-100);
+  color: var(--colour-text-subtle);
+}

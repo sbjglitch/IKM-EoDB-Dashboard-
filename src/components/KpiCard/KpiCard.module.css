@@ -1,0 +1,32 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  min-width: 0;
+  gap: var(--space-md);
+  padding: var(--space-xl);
+  background: var(--colour-background-surface-white);
+  border: 1px solid var(--colour-border-default);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xs);
+}
+.head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.head svg {
+  flex: none;
+}
+.label {
+  font: var(--text-body-lg-strong);
+  color: var(--colour-text-default);
+}
+.value {
+  font: var(--text-heading-h3-strong);
+  color: var(--colour-text-default);
+}
+.note {
+  font: var(--text-body-md-default);
+  color: var(--colour-text-secondary);
+}

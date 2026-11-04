@@ -1,0 +1,102 @@
+.hero {
+  position: relative;
+  overflow: hidden;
+  padding: var(--space-2xl) var(--page-padding-x);
+  background: var(--gradient-hero);
+  color: var(--colour-text-inverse);
+}
+/* Licensed/official photo goes here (open question 4). Set --hero-photo: url(...) on :root. */
+.photo {
+  position: absolute;
+  inset: 0;
+  background: var(--hero-photo, none) center / cover no-repeat;
+  opacity: var(--hero-photo-opacity);
+  pointer-events: none;
+}
+.inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 672px));
+  gap: var(--space-3xl);
+  max-width: 1376px;
+  margin: 0 auto;
+}
+.left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border: 1px solid var(--hero-glass-badge-border);
+  border-radius: var(--radius-pill);
+  background: var(--hero-glass-badge-bg);
+  font: var(--text-label-md-strong);
+}
+.badgeIcon {
+  color: var(--colour-lightblue-200);
+  flex: none;
+}
+.title {
+  font: var(--text-hero-headline);
+}
+.message {
+  max-width: 672px;
+  font: var(--text-body-lg-default);
+  color: var(--colour-darkblue-50);
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.right {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.eyebrow {
+  font: var(--text-label-sm-strong);
+  letter-spacing: 0.08em;
+  color: var(--colour-lightblue-100);
+}
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: var(--space-lg);
+  border: 1px solid var(--hero-glass-tile-border);
+  border-radius: var(--radius-lg);
+  background: var(--hero-glass-tile-bg);
+}
+.tileValue {
+  font: var(--text-hero-tile-value);
+}
+.tileText {
+  font: var(--text-body-md-default);
+  color: var(--colour-lightblue-150);
+}
+.source {
+  font: var(--text-label-sm-light);
+  color: var(--colour-lightblue-100);
+}
+
+@media (max-width: 1100px) {
+  .inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 560px) {
+  .tiles {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
