@@ -1,0 +1,66 @@
+.root {
+  position: relative;
+}
+/* Figma: Button, secondary sm — 128 × 36, padding 8/14 inside a 1px border. */
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 128px;
+  padding: 7px 13px;
+  background: var(--colour-background-surface-white);
+  border: 1px solid var(--colour-border-default);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xs);
+  color: var(--colour-text-default);
+  font: var(--text-body-md-default);
+  cursor: pointer;
+}
+.trigger:hover {
+  background: var(--colour-background-surface-card);
+}
+.chevron {
+  flex: none;
+  transition: transform 0.15s ease;
+}
+.trigger[aria-expanded='true'] .chevron {
+  transform: rotate(180deg);
+}
+.menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 10;
+  min-width: 100%;
+  padding: 4px;
+  background: var(--colour-background-surface-white);
+  border: 1px solid var(--colour-border-default);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-raised);
+}
+.item {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--colour-text-default);
+  font: var(--text-body-md-default);
+  text-align: left;
+  cursor: pointer;
+}
+.item:hover,
+.item:focus-visible {
+  background: var(--colour-background-surface-card);
+}
+.item[aria-checked='true'] {
+  font: var(--text-body-md-strong);
+  color: var(--colour-text-brand-darkblue);
+}
+@media (prefers-reduced-motion: reduce) {
+  .chevron {
+    transition: none;
+  }
+}

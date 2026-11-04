@@ -1,41 +1,48 @@
 import { LOGIN_URL } from '../../config';
+import ksmartLogo from '../../assets/header/ksmart-logo.svg';
+import dividerLine from '../../assets/header/divider-line.svg';
+import keralaLogo from '../../assets/header/government-of-kerala-logo.png';
+import lsgdLogo from '../../assets/header/lsgd-logo.png';
 import { Button } from '../Button/Button';
-import { ChevronDownIcon, GlobeIcon } from '../Icons/Icons';
+import { LanguageMenu, type Language } from '../LanguageMenu/LanguageMenu';
 import styles from './WebPortalHeader.module.css';
 
-export type Language = 'en' | 'ml';
+export type { Language };
 
 interface Props {
   language: Language;
   onLanguageChange: (l: Language) => void;
 }
 
+/** Figma: _Webportal-Header (29:385), 1440 × 80. */
 export function WebPortalHeader({ language, onLanguageChange }: Props) {
   return (
     <header className={styles.header}>
-      <div className={styles.brand}>
-        <img className={styles.ksmart} src="/assets/ksmart-logo.svg" alt="K-SMART" width={140} height={40} />
-        <span className={styles.divider} aria-hidden="true" />
-        <img src="/assets/government-of-kerala-logo.svg" alt="Government of Kerala emblem" width={48} height={48} />
-        <div className={styles.org}>
-          <span className={styles.orgTop}>Government of Kerala</span>
-          <span className={styles.orgBottom}>Local Self Government Department</span>
+      <div className={styles.inner}>
+        <div className={styles.brand}>
+          <a href="/" className={styles.ksmart}>
+            <img src={ksmartLogo} alt="K-SMART home" width={84.634} height={36.871} />
+          </a>
+          <span className={styles.divider} aria-hidden="true">
+            <img src={dividerLine} alt="" width={44} height={2} />
+          </span>
+          <span className={styles.keralaSlot}>
+            <img src={keralaLogo} alt="Government of Kerala emblem" />
+          </span>
+          <span className={styles.lsgdSlot}>
+            <img src={lsgdLogo} alt="Local Self Government Department logo" />
+          </span>
+          <div className={styles.org}>
+            <p className={styles.orgTop}>Government of Kerala</p>
+            <p className={styles.orgBottom}>Local Self Government Department</p>
+          </div>
         </div>
-        <img src="/assets/lsgd-logo.svg" alt="LSGD logo" width={48} height={48} />
-      </div>
-      <div className={styles.actions}>
-        <label className={styles.language}>
-          <GlobeIcon size={20} />
-          <span className="visually-hidden">Language</span>
-          <select value={language} onChange={(e) => onLanguageChange(e.target.value as Language)}>
-            <option value="en">English</option>
-            <option value="ml" lang="ml">മലയാളം</option>
-          </select>
-          <ChevronDownIcon size={16} />
-        </label>
-        <Button size="sm" hierarchy="primary" href={LOGIN_URL}>
-          Login
-        </Button>
+        <div className={styles.actions}>
+          <LanguageMenu language={language} onChange={onLanguageChange} />
+          <Button size="sm" hierarchy="primary" href={LOGIN_URL} className={styles.login}>
+            Login
+          </Button>
+        </div>
       </div>
     </header>
   );

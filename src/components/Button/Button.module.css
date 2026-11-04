@@ -12,7 +12,7 @@
 }
 
 .sm {
-  padding: 8px 16px;
+  padding: 7px 13px; /* 8/14 in Figma, measured inside the 1px border → 36px tall */
   font: var(--text-body-md-strong);
 }
 
@@ -23,6 +23,8 @@
 
 .primary {
   background: var(--colour-background-button-primary);
+  border-color: var(--colour-background-button-primary);
+  box-shadow: var(--shadow-xs);
   color: var(--colour-text-inverse);
 }
 .primary:hover {
