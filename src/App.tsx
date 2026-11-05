@@ -75,7 +75,7 @@ export function App() {
 
           <section aria-label="Application outcomes and key highlights" className={styles.outcomes}>
             <OutcomeCard services={SERVICES} selectedId={selectedId} onSelect={setSelectedId} />
-            <KeyHighlights />
+            <KeyHighlights services={SERVICES} />
           </section>
 
           <ServiceTable services={SERVICES} onServiceOpen={setSelectedId}>

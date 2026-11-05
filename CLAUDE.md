@@ -18,7 +18,7 @@ npm install
 npm run dev        # http://localhost:5173/
 npm run build      # tsc --noEmit && vite build → dist/
 npm run preview    # serve the production build
-npm run test       # Vitest + React Testing Library (26 tests)
+npm run test       # Vitest + React Testing Library (29 tests)
 npm run lint       # ESLint 9 flat config + typescript-eslint + react-hooks
 ```
 
@@ -38,7 +38,7 @@ Every section in §1 exists and renders at 1440 px and at phone width (no horizo
 | `Hero` | Built from spec only — **not yet compared with Figma**. No photo (open question 4). |
 | `KpiCard` ×5 | Built from spec — not yet compared with Figma. |
 | `OutcomeCard` + `OutcomeWaffle` | Built from spec — not yet compared with Figma. Picker syncs with table rows. |
-| `KeyHighlights` | Shell + placeholder only (open question 1). |
+| `KeyHighlights` | Four data-derived insights (Start / Build / Connect / Renew) from `src/lib/highlights.ts`; wording adapts or drops a claim when the data stops supporting it. Tests in `highlights.test.ts`. Copy drafted by Claude — needs review; not in Figma. |
 | `ServiceTable` + `RowDetail` | Built from spec, fully interactive (sort, expand, flags, total). Tests in `ServiceTable.test.tsx`. Not yet compared with Figma. |
 | `Definitions` | Built with **draft copy written by Claude** — needs review. |
 | `Footer` | Built from spec. |
@@ -199,7 +199,7 @@ Use `font-variant-numeric: tabular-nums` (`.num` class) on every number in KPIs 
 6. **`KpiCard`** — `icon`, `label`, `value`, `note`. Icons (inline SVG, 1.5 px stroke, `currentColor`, in `Icons/Icons.tsx`): chart-square (subtle), check (success), return arrow (light blue), cross (red 500), clock (brand dark blue).
 7. **`OutcomeWaffle`** — N squares; main = 240 squares 12 px, gap 4, 6 rows, filled column by column; order approved → returned → rejected → remaining; `role="img"` + full `aria-label`.
 8. **`OutcomeCard`** — header + service picker (`<select>`, default "All services (total)"), headline %, waffle, 4-column legend.
-9. **`KeyHighlights`** — shell; content pending (§11.1).
+9. **`KeyHighlights`** — `services` prop; renders `buildHighlights(services)` (see §0.2).
 10. **`ServiceTable`** — see §7.
 11. **`RowDetail`** — expanded row content.
 12. **`Tag`** — `warning` / `neutral`.
@@ -264,7 +264,7 @@ Stored in `src/data/services.ts` (`Service` interface, `SERVICES` array of 9). T
 
 ## 11. Open questions
 
-1. **Key Highlights card is empty in Figma.** Suggested: "Applications by Service" ranked bar list. Confirm before building.
+1. **Key Highlights card is empty in Figma.** Built as four derived insights (new trade licence slowest decision within limit, building permit median vs limit, mobile tower approvals, renewal volume). Confirm copy and choice with design/stakeholders.
 2. ~~Expanded row mismatch~~ — resolved in code: detail shows its own row's figures.
 3. **"View Application List" target** — placeholder in `src/config.ts`.
 4. **Hero photo** — Unsplash image (`unsplash:eEBYeEvEzYw`) needs a licensed/official replacement.
