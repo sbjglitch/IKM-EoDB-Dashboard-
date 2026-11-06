@@ -3,7 +3,7 @@ import styles from './Button.module.css';
 
 type CommonProps = {
   size?: 'sm' | 'xl';
-  hierarchy?: 'primary' | 'tertiary' | 'tertiary-grey';
+  hierarchy?: 'primary' | 'secondary' | 'tertiary' | 'tertiary-grey';
   /** Where the icon sits. 'only' renders just the icon (give it an aria-label). */
   icon?: 'none' | 'leading' | 'trailing' | 'only';
   iconNode?: ReactNode;

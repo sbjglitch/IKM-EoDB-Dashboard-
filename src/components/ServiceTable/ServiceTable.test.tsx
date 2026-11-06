@@ -66,11 +66,31 @@ describe('ServiceTable', () => {
     const tlrDetail = document.getElementById(tlr.getAttribute('aria-controls')!)!;
     expect(bpDetail).toBeVisible();
     // Building Permit: 170580 / 276849 = 61.6%, never Renewal's 82.4%
-    expect(bpDetail).toHaveTextContent('Approved 61.6%');
+    expect(within(bpDetail).getByText('61.6%')).toBeInTheDocument();
+    expect(within(bpDetail).getByText('1,70,580')).toBeInTheDocument();
     expect(bpDetail).not.toHaveTextContent('82.4%');
-    expect(tlrDetail).toHaveTextContent('Approved 82.4%');
-    expect(tlrDetail).toHaveTextContent('Remaining 73,476 (10.4%)');
-    expect(within(tlrDetail).getByRole('link', { name: 'View Application List' })).toBeInTheDocument();
+    expect(within(bpDetail).getByText('All within the 15-day limit')).toBeInTheDocument();
+    expect(within(bpDetail).getByRole('img', { name: /median 8 days, average 13 days/ })).toBeInTheDocument();
+
+    expect(within(tlrDetail).getByText('82.4%')).toBeInTheDocument();
+    expect(within(tlrDetail).getByText('73,476')).toBeInTheDocument();
+    expect(within(tlrDetail).getByText('10.4%')).toBeInTheDocument();
+    // Renewal misses its same-day limit, and the detail says so.
+    expect(within(tlrDetail).getByText('Average exceeds the same-day limit')).toBeInTheDocument();
+    expect(within(tlrDetail).getByRole('link', { name: 'View Application List' })).toHaveAttribute(
+      'href',
+      '#/service/tlr/applications',
+    );
+
+    // Building Permit has inspection data, so its detail links to the two inspection pages; Renewal does not.
+    expect(within(bpDetail).getByRole('link', { name: 'Inspection Performance' })).toHaveAttribute(
+      'href',
+      '#/service/bp/inspection-performance',
+    );
+    expect(
+      within(bpDetail).getByRole('link', { name: 'Self-Certification and Third-Party Inspection' }),
+    ).toHaveAttribute('href', '#/service/bp/self-certification');
+    expect(within(tlrDetail).queryByRole('link', { name: 'Inspection Performance' })).not.toBeInTheDocument();
 
     await user.click(bp);
     expect(bp).toHaveAttribute('aria-expanded', 'false');

@@ -1,11 +1,6 @@
 import type { Service } from '../data/services';
-import { formatDays, formatINR, pct } from './format';
+import { formatDays, formatINR, limitPhrase, pct } from './format';
 import { remaining, totals } from './derive';
-
-/** "7-day limit"; "same-day limit" for Same day. */
-function limitPhrase(s: Service): string {
-  return s.rtsLimitLabel === 'Same day' ? 'same-day limit' : `${s.rtsLimitDays}-day limit`;
-}
 
 export interface Highlight {
   id: string;

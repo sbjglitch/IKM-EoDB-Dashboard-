@@ -36,3 +36,15 @@ export function pct(part: number, whole: number): string {
 export function formatDays(n: number): string {
   return n === 1 ? '1 day' : `${n} days`;
 }
+
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+/** "3 Nov 2026" — one date format everywhere, independent of the runtime's locale data. */
+export function formatDate(d: Date): string {
+  return `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+/** "7-day limit"; "same-day limit" when the RTS limit is Same day. */
+export function limitPhrase(s: { rtsLimitDays: number; rtsLimitLabel: string }): string {
+  return s.rtsLimitLabel === 'Same day' ? 'same-day limit' : `${s.rtsLimitDays}-day limit`;
+}

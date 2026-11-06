@@ -31,6 +31,17 @@
   filter: brightness(0.94);
 }
 
+/* White with a hairline border (Paper row detail, node 1KQ-0). */
+.secondary {
+  background: var(--colour-background-surface-white);
+  border-color: var(--colour-border-default);
+  color: var(--colour-text-default);
+}
+.secondary:hover {
+  background: var(--colour-background-surface-card);
+  border-color: var(--colour-border-strong);
+}
+
 .tertiary {
   background: transparent;
   color: var(--colour-text-brand-darkblue);

@@ -18,7 +18,7 @@ npm install
 npm run dev        # http://localhost:5173/
 npm run build      # tsc --noEmit && vite build → dist/
 npm run preview    # serve the production build
-npm run test       # Vitest + React Testing Library (29 tests)
+npm run test       # Vitest + React Testing Library (49 tests)
 npm run lint       # ESLint 9 flat config + typescript-eslint + react-hooks
 ```
 
@@ -39,8 +39,9 @@ Every section in §1 exists and renders at 1440 px and at phone width (no horizo
 | `KpiCard` ×5 | Built from spec — not yet compared with Figma. |
 | `OutcomeCard` + `OutcomeWaffle` | Built from spec — not yet compared with Figma. Picker syncs with table rows. |
 | `KeyHighlights` | Four data-derived insights (Start / Build / Connect / Renew) from `src/lib/highlights.ts`; wording adapts or drops a claim when the data stops supporting it. Tests in `highlights.test.ts`. Copy drafted by Claude — needs review; not in Figma. |
-| `ServiceTable` + `RowDetail` | Built from spec, fully interactive (sort, expand, flags, total). Tests in `ServiceTable.test.tsx`. Not yet compared with Figma. |
+| `ServiceTable` + `RowDetail` | Built from spec, fully interactive (sort, expand, flags, total). Tests in `ServiceTable.test.tsx`. Not yet compared with Figma. `RowDetail` is the Paper "option B" design: four outcome stats + a time-to-process track (`src/lib/timeTrack.ts`) instead of the mini waffle. |
 | `Definitions` | Built with **draft copy written by Claude** — needs review. |
+| `Inspections/` | `InspectionPage` + `InspectionTables` — the Excel tables c and d, each on **its own page**, Building Permit row only. Reached from the "Inspection Performance" / "Self-Certification and Third-Party Inspection" buttons in the Building Permit row detail. Reuses `ServiceTable.module.css`. **Runs on sample data** (`src/data/inspections.ts`, `INSPECTIONS_ARE_SAMPLE = true`) with a "Sample data" tag and footnote. Tests in `InspectionPage.test.tsx`, `inspections.test.ts`, `routes.test.ts`. |
 | `Footer` | Built from spec. |
 
 ### 0.3 Next steps
@@ -57,7 +58,7 @@ Every section in §1 exists and renders at 1440 px and at phone width (no horizo
 - **Row detail** always shows the figures of its own row (resolves open question 2).
 - **Table card** contains the Definitions via `children` (`<ServiceTable><Definitions /></ServiceTable>`).
 - **Waffle on narrow screens** (< 700 px) switches to row flow with `auto-fill` so it wraps instead of overflowing.
-- **Placeholder links** are centralised in `src/config.ts` (`APPLY_URL`, `LOGIN_URL` = `https://ksmart.lsgkerala.gov.in` — assumed, confirm; `APPLICATION_LIST_URL`, `TERMS_URL`, `PRIVACY_URL` = `#…`).
+- **Placeholder links** are centralised in `src/config.ts` (`APPLY_URL`, `LOGIN_URL` = `https://ksmart.lsgkerala.gov.in` — assumed, confirm; `TERMS_URL`, `PRIVACY_URL` = `#…`). "View Application List" is no longer a placeholder: it opens the in-app application list page.
 - **Fonts** are self-hosted through `@fontsource/manrope` (400–800), imported in `src/main.tsx`.
 
 ### 0.5 Known issues to raise with design
@@ -87,6 +88,8 @@ Sections, top to bottom:
 5. **Application Outcomes** — outcome card (240-square waffle + legend) beside a **Key Highlights** card.
 6. **Service-wise Approval Details** — the mandatory table (9 services + total row), one expandable row, definitions underneath.
 7. **Footer** — copyright, Terms & Conditions, Privacy Policy.
+
+Further pages share the header, breadcrumb and footer (hash routes in `src/lib/routes.ts`, no router library). **Application list** (`#/service/<id>/applications`, every service, from "View Application List" in each row detail; designed in Paper "Flow 2" and "Flow 3"): title "<Service> · Approved applications" with the real count, search by application number, Approved / Returned / Rejected filter, table (Sl No, Application No, masked applicant, local body, applied on, decided on, days taken — pink over the RTS limit, fees), 10 per page, and a **fee details dialog** (receipt number and date, fee lines, total, Close; Escape closes, focus trapped and returned to the opener). Rows come from `sampleApplications()` in `src/data/applications.ts` — **sample records** (`APPLICATIONS_ARE_SAMPLE = true`), at most 24 per decision, deterministic, days within the service's min–max. **Inspection Performance** (`#/service/bp/inspection-performance`) and **Self-Certification and Third-Party Inspection** (`#/service/bp/self-certification`). They are reached from buttons in the Building Permit row detail (Paper node `1KP-0`), never shown on the dashboard itself. Only hashes starting with `#/` are routes; plain anchors (`#terms`, `#service-table`) stay on the dashboard.
 
 ## 2. Source of truth
 
@@ -194,7 +197,7 @@ Use `font-variant-numeric: tabular-nums` (`.num` class) on every number in KPIs 
 1. **`WebPortalHeader`** [`_Webportal-Header`] — done (see §0.2).
 2. **`LanguageMenu`** — done (see §0.4).
 3. **`Breadcrumb`** — `<nav aria-label="Breadcrumb">` + `<ol>`; last item `aria-current="page"`.
-4. **`Button`** [K-Suite `Button`] — `size: 'sm' | 'xl'`, `hierarchy: 'primary' | 'tertiary' | 'tertiary-grey'`, `icon: 'none' | 'leading' | 'trailing' | 'only'` + `iconNode`. Renders `<a>` when `href` is set. Labels are verb + object.
+4. **`Button`** [K-Suite `Button`] — `size: 'sm' | 'xl'`, `hierarchy: 'primary' | 'secondary' | 'tertiary' | 'tertiary-grey'` (secondary = white with a hairline border, used in the row detail and on sub-pages), `icon: 'none' | 'leading' | 'trailing' | 'only'` + `iconNode`. Renders `<a>` when `href` is set. Labels are verb + object.
 5. **`Hero`** — includes `RankingBadge` and `ProofTile`.
 6. **`KpiCard`** — `icon`, `label`, `value`, `note`. Icons (inline SVG, 1.5 px stroke, `currentColor`, in `Icons/Icons.tsx`): chart-square (subtle), check (success), return arrow (light blue), cross (red 500), clock (brand dark blue).
 7. **`OutcomeWaffle`** — N squares; main = 240 squares 12 px, gap 4, 6 rows, filled column by column; order approved → returned → rejected → remaining; `role="img"` + full `aria-label`.
@@ -205,6 +208,7 @@ Use `font-variant-numeric: tabular-nums` (`.num` class) on every number in KPIs 
 12. **`Tag`** — `warning` / `neutral`.
 13. **`Definitions`** — `<dl>` with five pairs.
 14. **`Footer`**.
+15. **`InspectionPage`** — `page`, `service`. Eyebrow (service name), `h1` page title (focused on arrival) + "Sample data" tag, intro, one table, then secondary buttons "Back to EoDB Dashboard" and a link to the other inspection page. Coming back to the dashboard scrolls to the service table. **`InspectionPerformanceTable` / `SelfCertificationTable`** — real `<table>` with a visually hidden `<caption>` (the `h1` names it on screen), two header rows, one body row, no sorting. Shares: scheduled of requiring, conducted of scheduled, within/beyond timeline and reports within/beyond 24 h of conducted, exemptions of enterprises. Beyond-timeline / beyond-24 h counts are pink when > 0. "Requiring inspection" shows the count only — never a share of the service table's received figure while the inspection data is sample. The Excel "Sl. No" column is dropped.
 
 ## 7. Service table (mandatory component)
 
@@ -222,7 +226,7 @@ The stakeholder requires this table. Never remove it or replace it with cards.
 ### 7.2 Behaviour
 
 - **Sort**: every column except fee. `<button>` in the `<th>`, `aria-sort` on the `<th>`. First click = descending for numbers, ascending for name; second click reverses. Total row stays in `<tfoot>`.
-- **Expand row**: chevron button (`aria-expanded`, `aria-controls`) toggles a detail `<tr>` (`<td colspan="11">`) — 50-square mini waffle (13 px, gap 3, 2 rows × 25), "Approved x% · Returned y% · Rejected z% · Remaining n (r%)", pink "View Application List". Opening a row sets the Outcome card's picker to that service. Several rows may be open. Chevron rotates 90° (respect reduced motion).
+- **Expand row**: chevron button (`aria-expanded`, `aria-controls`) toggles a detail `<tr>` (`<td colspan="11">`) — four outcome stats (swatch, label, %, count; "No applications recorded" when `received === 0`), a divider, a time-to-process track (range min–max, median dot, average ring, RTS limit tick, pink segment past the limit, legend, status line such as "All within the 15-day limit"), then a row of secondary (white) buttons: "View Application List", plus "Inspection Performance" and "Self-Certification and Third-Party Inspection" for services with inspection data (`inspectionLinksFor`). Opening a row sets the Outcome card's picker to that service. Several rows may be open. Chevron rotates 90° (respect reduced motion).
 - **Flags**: `Tag warning "Exceeds RTS limit"` when `avg > limit || max > limit`; `Tag neutral "No applications recorded"` when `received === 0`; Max value pink when `max > limit`.
 - Narrow screens: table scrolls horizontally inside its card (`role="region"`, `tabIndex=0`), Service column sticky.
 
@@ -240,6 +244,10 @@ Stored in `src/data/services.ts` (`Service` interface, `SERVICES` array of 9). T
 - "Within RTS limit": `received > 0 && avgDays <= rtsLimitDays` → **7 of 8**.
 - Waffle: largest-remainder method; 240 → 163 / 24 / 3 / 50; Renewal at 50 → 41 / 3 / 1 / 5.
 - Hero tiles: "3 days" (Trade License – New median, limit 7), "11,19,131", "7 of 8", "1.2%".
+
+### 8.2a Inspection data (sample)
+
+`src/data/inspections.ts`: `InspectionPerformance` (`requiringInspection`, `scheduled`, `conducted`, `conductedWithinTimeline`, `conductedBeyondTimeline`, `reportsWithin24h`, `reportsBeyond24h`) and `SelfCertification` (`enterprisesUnderRegime`, `exemptedSelfCertification`, `exemptedThirdParty`), keyed by `serviceId`. Figures are **invented sample data** for design review. `checkInspectionRow` / `checkSelfCertRow` in `src/lib/inspections.ts` enforce scheduled ≤ requiring, conducted ≤ scheduled, within + beyond = conducted (both pairs), exemptions ≤ enterprises — run them on API data too.
 
 ### 8.3 Formatting
 
@@ -266,7 +274,7 @@ Stored in `src/data/services.ts` (`Service` interface, `SERVICES` array of 9). T
 
 1. **Key Highlights card is empty in Figma.** Built as four derived insights (new trade licence slowest decision within limit, building permit median vs limit, mobile tower approvals, renewal volume). Confirm copy and choice with design/stakeholders.
 2. ~~Expanded row mismatch~~ — resolved in code: detail shows its own row's figures.
-3. **"View Application List" target** — placeholder in `src/config.ts`.
+3. **Application list data** — the page exists but runs on sample records; which K-SMART API returns individual applications (with masked names and fee receipts), and whether the live list should open in K-SMART instead.
 4. **Hero photo** — Unsplash image (`unsplash:eEBYeEvEzYw`) needs a licensed/official replacement.
 5. **"Last updated" timestamp** — not in the source data; ask the K-SMART team.
 6. **Hidden "User Actions"** (Print/Download in breadcrumb bar) — do not build unless asked.
@@ -274,6 +282,9 @@ Stored in `src/data/services.ts` (`Service` interface, `SERVICES` array of 9). T
 8. **Malayalam content** — no translations supplied.
 9. **Apply/Login URL** — `https://ksmart.lsgkerala.gov.in` assumed.
 10. **Definitions and hero paragraph copy** — drafted by Claude; needs review.
+11. **Inspection data source** — which K-SMART API supplies tables c and d, and its update date.
+12. **Inspection "timeline"** — what limit "within timeline" is measured against, so it can be stated on the page.
+13. **Sample inspection data** — must be replaced and `INSPECTIONS_ARE_SAMPLE` set to false before launch.
 
 ## 12. File structure
 
@@ -289,7 +300,7 @@ src/
   components/
     Breadcrumb/ Button/ Definitions/ Footer/ Hero/ Icons/ KeyHighlights/
     KpiCard/ LanguageMenu/ OutcomeCard/ OutcomeWaffle/ RowDetail/
-    ServiceTable/ Tag/ WebPortalHeader/
+    ServiceTable/ Tag/ WebPortalHeader/ Inspections/ ApplicationList/
   App.tsx, App.module.css, main.tsx
 ```
 
@@ -302,3 +313,5 @@ src/
 - Don't add a charting or UI library without asking.
 - Don't sum or average processing times across services.
 - Don't reference temporary Figma asset URLs at runtime.
+- Don't ship with `INSPECTIONS_ARE_SAMPLE = true` or `APPLICATIONS_ARE_SAMPLE = true`, and don't divide sample figures by real application totals.
+- Don't show unmasked applicant names in the application list.

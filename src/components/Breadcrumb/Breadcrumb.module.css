@@ -32,6 +32,19 @@
   font: var(--text-label-md-strong);
   color: var(--colour-text-brand-darkblue);
 }
+.list {
+  flex-wrap: wrap;
+  row-gap: 0;
+}
+.bar {
+  height: auto;
+  min-height: 48px;
+}
+@media (max-width: 600px) {
+  .active {
+    font: var(--text-label-sm-default);
+  }
+}
 @media (max-width: 900px) {
   .bar {
     padding: 0 var(--page-padding-x);
