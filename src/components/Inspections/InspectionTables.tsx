@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
-import type { InspectionPerformance, SelfCertification } from '../../data/inspections';
+import type { InspectionPerformanceRow, SelfCertification } from '../../data/inspections';
 import { formatINR, pct } from '../../lib/format';
+import { inspectionTotals } from '../../lib/inspections';
 import t from '../ServiceTable/ServiceTable.module.css';
 import styles from './Inspections.module.css';
 
@@ -51,11 +52,40 @@ interface TableProps<R> {
   isSample: boolean;
 }
 
-export function InspectionPerformanceTable({ serviceName, row: p, isSample }: TableProps<InspectionPerformance>) {
+type PerfFigures = Omit<InspectionPerformanceRow, 'id' | 'name'>;
+
+/** Cells for one row (or the total). Report figures carry no share: their unit is not confirmed. */
+function PerformanceCells({ r }: { r: PerfFigures }) {
+  return (
+    <>
+      <td className={t.num}><Count n={r.requiringInspection} /></td>
+      <td className={t.num}><Count n={r.scheduled} of={r.requiringInspection} ofLabel="applications" /></td>
+      <td className={t.num}><Count n={r.conducted} of={r.scheduled} ofLabel="scheduled" /></td>
+      <td className={t.num}><Count n={r.conductedWithinTimeline} of={r.conducted} ofLabel="conducted" /></td>
+      <td className={t.num}><Count n={r.conductedBeyondTimeline} of={r.conducted} ofLabel="conducted" over /></td>
+      <td className={t.num}><Count n={r.reportsWithinTimeline} /></td>
+      <td className={t.num}><Count n={r.reportsBeyondTimeline} over /></td>
+    </>
+  );
+}
+
+const PERFORMANCE_NOTES = [
+  'Within and beyond timeline do not add up to conducted in the source figures.',
+  'Report figures are shown as supplied; their unit is being confirmed.',
+  'Beyond-timeline figures are shown in pink.',
+];
+
+interface PerformanceProps {
+  rows: InspectionPerformanceRow[];
+  isSample: boolean;
+}
+
+export function InspectionPerformanceTable({ rows, isSample }: PerformanceProps) {
+  const total = inspectionTotals(rows);
   return (
     <Card
-      caption={`Inspection Performance · ${serviceName}`}
-      footnote={join(isSample && SAMPLE_NOTE, 'Beyond-timeline and beyond-24-hour counts are shown in pink.')}
+      caption="Inspection Performance · Building permit services"
+      footnote={join(isSample && SAMPLE_NOTE, ...PERFORMANCE_NOTES)}
       minWidth={1376}
     >
       <colgroup>
@@ -69,33 +99,34 @@ export function InspectionPerformanceTable({ serviceName, row: p, isSample }: Ta
           <th scope="col" rowSpan={2} className={t.serviceHead}>Service</th>
           <th scope="colgroup" colSpan={3} className={t.groupHead}>Inspections</th>
           <th scope="colgroup" colSpan={2} className={t.groupHead}>Conducted</th>
-          <th scope="colgroup" colSpan={2} className={t.groupHead}>Reports uploaded</th>
+          <th scope="colgroup" colSpan={2} className={t.groupHead}>Inspection reports</th>
         </tr>
         <tr>
-          <th scope="col" className={t.subHead}>Requiring inspection</th>
+          <th scope="col" className={t.subHead}>Applications for inspection</th>
           <th scope="col" className={t.subHead}>Scheduled</th>
           <th scope="col" className={t.subHead}>Conducted</th>
           <th scope="col" className={t.subHead}>Within timeline</th>
           <th scope="col" className={t.subHead}>Beyond timeline</th>
-          <th scope="col" className={t.subHead}>Within 24 hours</th>
-          <th scope="col" className={t.subHead}>Beyond 24 hours</th>
+          <th scope="col" className={t.subHead}>Reports within timeline</th>
+          <th scope="col" className={t.subHead}>Reports beyond timeline</th>
         </tr>
       </thead>
       <tbody>
-        <tr className={t.row}>
-          <th scope="row" className={t.serviceCell}>
-            <span className={t.name}>{serviceName}</span>
-          </th>
-          {/* Count only: a share of all received applications would mix sample and real data. */}
-          <td className={t.num}><Count n={p.requiringInspection} /></td>
-          <td className={t.num}><Count n={p.scheduled} of={p.requiringInspection} ofLabel="requiring" /></td>
-          <td className={t.num}><Count n={p.conducted} of={p.scheduled} ofLabel="scheduled" /></td>
-          <td className={t.num}><Count n={p.conductedWithinTimeline} of={p.conducted} ofLabel="conducted" /></td>
-          <td className={t.num}><Count n={p.conductedBeyondTimeline} of={p.conducted} ofLabel="conducted" over /></td>
-          <td className={t.num}><Count n={p.reportsWithin24h} of={p.conducted} ofLabel="conducted" /></td>
-          <td className={t.num}><Count n={p.reportsBeyond24h} of={p.conducted} ofLabel="conducted" over /></td>
-        </tr>
+        {rows.map((r) => (
+          <tr key={r.id} className={t.row}>
+            <th scope="row" className={t.serviceCell}>
+              <span className={t.name}>{r.name}</span>
+            </th>
+            <PerformanceCells r={r} />
+          </tr>
+        ))}
       </tbody>
+      <tfoot>
+        <tr className={t.totalRow}>
+          <th scope="row" className={t.totalLabel}>Total</th>
+          <PerformanceCells r={total} />
+        </tr>
+      </tfoot>
     </Card>
   );
 }

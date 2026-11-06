@@ -1,6 +1,12 @@
 import { useEffect, useRef } from 'react';
 import type { Service } from '../../data/services';
-import { INSPECTION_PERFORMANCE, INSPECTIONS_ARE_SAMPLE, SELF_CERTIFICATION } from '../../data/inspections';
+import {
+  INSPECTION_PERFORMANCE,
+  INSPECTION_PERFORMANCE_IS_SAMPLE,
+  INSPECTION_PERFORMANCE_SERVICE_IDS,
+  SELF_CERTIFICATION,
+  SELF_CERTIFICATION_IS_SAMPLE,
+} from '../../data/inspections';
 import { DASHBOARD_HREF, INSPECTION_PAGE_TITLES, inspectionHref, type InspectionPage as Page } from '../../lib/routes';
 import { Button } from '../Button/Button';
 import { Tag } from '../Tag/Tag';
@@ -27,8 +33,9 @@ interface Props {
 export function InspectionPage({ page, service }: Props) {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const title = INSPECTION_PAGE_TITLES[page];
-  const performance = INSPECTION_PERFORMANCE.find((r) => r.serviceId === service.id);
+  const performance = INSPECTION_PERFORMANCE_SERVICE_IDS.includes(service.id) ? INSPECTION_PERFORMANCE : null;
   const selfCert = SELF_CERTIFICATION.find((r) => r.serviceId === service.id);
+  const isSample = page === 'inspection-performance' ? INSPECTION_PERFORMANCE_IS_SAMPLE : SELF_CERTIFICATION_IS_SAMPLE;
   const other = OTHER[page];
   const hasOther = other === 'inspection-performance' ? !!performance : !!selfCert;
 
@@ -44,16 +51,16 @@ export function InspectionPage({ page, service }: Props) {
         <span className={styles.eyebrow}>{service.name}</span>
         <div className={styles.titleRow}>
           <h1 ref={titleRef} tabIndex={-1} className={styles.pageTitle}>{title}</h1>
-          {INSPECTIONS_ARE_SAMPLE && <Tag variant="warning">Sample data</Tag>}
+          {isSample && <Tag variant="warning">Sample data</Tag>}
         </div>
         <p className={styles.intro}>{INTRO[page]}</p>
       </div>
 
       {page === 'inspection-performance' && performance && (
-        <InspectionPerformanceTable serviceName={service.name} row={performance} isSample={INSPECTIONS_ARE_SAMPLE} />
+        <InspectionPerformanceTable rows={performance} isSample={isSample} />
       )}
       {page === 'self-certification' && selfCert && (
-        <SelfCertificationTable serviceName={service.name} row={selfCert} isSample={INSPECTIONS_ARE_SAMPLE} />
+        <SelfCertificationTable serviceName={service.name} row={selfCert} isSample={isSample} />
       )}
       {((page === 'inspection-performance' && !performance) || (page === 'self-certification' && !selfCert)) && (
         <p className={styles.empty}>No inspection figures are published for {service.name}.</p>

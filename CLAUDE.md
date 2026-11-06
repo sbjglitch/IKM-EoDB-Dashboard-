@@ -41,7 +41,7 @@ Every section in §1 exists and renders at 1440 px and at phone width (no horizo
 | `KeyHighlights` | Four data-derived insights (Start / Build / Connect / Renew) from `src/lib/highlights.ts`; wording adapts or drops a claim when the data stops supporting it. Tests in `highlights.test.ts`. Copy drafted by Claude — needs review; not in Figma. |
 | `ServiceTable` + `RowDetail` | Built from spec, fully interactive (sort, expand, flags, total). Tests in `ServiceTable.test.tsx`. Not yet compared with Figma. `RowDetail` is the Paper "option B" design: four outcome stats + a time-to-process track (`src/lib/timeTrack.ts`) instead of the mini waffle. |
 | `Definitions` | Built with **draft copy written by Claude** — needs review. |
-| `Inspections/` | `InspectionPage` + `InspectionTables` — the Excel tables c and d, each on **its own page**, Building Permit row only. Reached from the "Inspection Performance" / "Self-Certification and Third-Party Inspection" buttons in the Building Permit row detail. Reuses `ServiceTable.module.css`. **Runs on sample data** (`src/data/inspections.ts`, `INSPECTIONS_ARE_SAMPLE = true`) with a "Sample data" tag and footnote. Tests in `InspectionPage.test.tsx`, `inspections.test.ts`, `routes.test.ts`. |
+| `Inspections/` | `InspectionPage` + `InspectionTables` — the Excel tables c and d, each on **its own page**, Reached from the "Inspection Performance" / "Self-Certification and Third-Party Inspection" buttons in the Building Permit row detail. Reuses `ServiceTable.module.css`. **Inspection Performance runs on supplied figures** (6 Nov 2026): four building permit categories + a derived total row (`INSPECTION_PERFORMANCE_IS_SAMPLE = false`). **Self-Certification still runs on sample data** (`SELF_CERTIFICATION_IS_SAMPLE = true`) with a "Sample data" tag and footnote. Tests in `InspectionPage.test.tsx`, `inspections.test.ts`, `routes.test.ts`. |
 | `Footer` | Built from spec. |
 
 ### 0.3 Next steps
@@ -208,7 +208,7 @@ Use `font-variant-numeric: tabular-nums` (`.num` class) on every number in KPIs 
 12. **`Tag`** — `warning` / `neutral`.
 13. **`Definitions`** — `<dl>` with five pairs.
 14. **`Footer`**.
-15. **`InspectionPage`** — `page`, `service`. Eyebrow (service name), `h1` page title (focused on arrival) + "Sample data" tag, intro, one table, then secondary buttons "Back to EoDB Dashboard" and a link to the other inspection page. Coming back to the dashboard scrolls to the service table. **`InspectionPerformanceTable` / `SelfCertificationTable`** — real `<table>` with a visually hidden `<caption>` (the `h1` names it on screen), two header rows, one body row, no sorting. Shares: scheduled of requiring, conducted of scheduled, within/beyond timeline and reports within/beyond 24 h of conducted, exemptions of enterprises. Beyond-timeline / beyond-24 h counts are pink when > 0. "Requiring inspection" shows the count only — never a share of the service table's received figure while the inspection data is sample. The Excel "Sl. No" column is dropped.
+15. **`InspectionPage`** — `page`, `service`. Eyebrow (service name), `h1` page title (focused on arrival) + "Sample data" tag, intro, one table, then secondary buttons "Back to EoDB Dashboard" and a link to the other inspection page. Coming back to the dashboard scrolls to the service table. **`InspectionPerformanceTable` / `SelfCertificationTable`** — real `<table>` with a visually hidden `<caption>` (the `h1` names it on screen), two header rows, no sorting. Inspection Performance has one body row per category (General Building Permit, Regularized Completion, Revised Permit, Partially / Completed Permits for Occupancy) and a `<tfoot>` total from `inspectionTotals`; Self-Certification has one body row. Shares: scheduled of applications for inspection, conducted of scheduled, within/beyond timeline of conducted, exemptions of enterprises. Report columns ("Reports within / beyond timeline") show counts only — the supplied values are far larger than inspections conducted, so their unit is unconfirmed. Beyond-timeline figures are pink when > 0. "Requiring inspection" shows the count only — never a share of the service table's received figure while the inspection data is sample. The Excel "Sl. No" column is dropped.
 
 ## 7. Service table (mandatory component)
 
@@ -245,14 +245,13 @@ Stored in `src/data/services.ts` (`Service` interface, `SERVICES` array of 9). T
 - Waffle: largest-remainder method; 240 → 163 / 24 / 3 / 50; Renewal at 50 → 41 / 3 / 1 / 5.
 - Hero tiles: "3 days" (Trade License – New median, limit 7), "11,19,131", "7 of 8", "1.2%".
 
-### 8.2a Inspection data (sample)
+### 8.2a Inspection data
 
-`src/data/inspections.ts`: `InspectionPerformance` (`requiringInspection`, `scheduled`, `conducted`, `conductedWithinTimeline`, `conductedBeyondTimeline`, `reportsWithin24h`, `reportsBeyond24h`) and `SelfCertification` (`enterprisesUnderRegime`, `exemptedSelfCertification`, `exemptedThirdParty`), keyed by `serviceId`. Figures are **invented sample data** for design review. `checkInspectionRow` / `checkSelfCertRow` in `src/lib/inspections.ts` enforce scheduled ≤ requiring, conducted ≤ scheduled, within + beyond = conducted (both pairs), exemptions ≤ enterprises — run them on API data too.
+`src/data/inspections.ts`:
 
-### 8.3 Formatting
-
-- Indian digit grouping via `formatINR` (hand-written, tested) — 16,51,551, not 1,651,551.
-- Currency "₹150", "Avg ₹4,000", "₹10,000". Days "1 day", "2 days"; `Same day` stays text.
+- **`INSPECTION_PERFORMANCE`** — `InspectionPerformanceRow[]` (`id`, `name`, `requiringInspection`, `scheduled`, `conducted`, `conductedWithinTimeline`, `conductedBeyondTimeline`, `reportsWithinTimeline`, `reportsBeyondTimeline`). Supplied figures, 6 Nov 2026, four building permit categories. `INSPECTION_PERFORMANCE_SERVICE_IDS = ['bp']` decides which dashboard rows link to the page. Totals are derived (`inspectionTotals`) and tested against the supplied total row: 6,43,587 / 3,49,738 / 3,38,116 / 2,46,363 / 77,825 / 1,78,26,677 / 5,10,93,220.
+- Known source quirks: within + beyond timeline is **less than** conducted in every row (gap unexplained), and report figures are far larger than inspections conducted (unit unknown). `checkInspectionRow` therefore enforces scheduled ≤ requiring, conducted ≤ scheduled, within + beyond ≤ conducted, and has no rule for reports.
+- **`SELF_CERTIFICATION`** — `SelfCertification` keyed by `serviceId`; **invented sample data** for design review. `checkSelfCertRow` enforces exemptions ≤ enterprises.
 
 ## 9. Content and voice (K-Suite content guide)
 
@@ -284,7 +283,8 @@ Stored in `src/data/services.ts` (`Service` interface, `SERVICES` array of 9). T
 10. **Definitions and hero paragraph copy** — drafted by Claude; needs review.
 11. **Inspection data source** — which K-SMART API supplies tables c and d, and its update date.
 12. **Inspection "timeline"** — what limit "within timeline" is measured against, so it can be stated on the page.
-13. **Sample inspection data** — must be replaced and `INSPECTIONS_ARE_SAMPLE` set to false before launch.
+13. **Sample self-certification data** — must be replaced and `SELF_CERTIFICATION_IS_SAMPLE` set to false before launch.
+14. **Inspection Performance source** — confirm where the 6 Nov 2026 figures come from and their as-of date (show it on the page), why within + beyond timeline falls short of conducted, and what unit the report columns use.
 
 ## 12. File structure
 
@@ -313,5 +313,5 @@ src/
 - Don't add a charting or UI library without asking.
 - Don't sum or average processing times across services.
 - Don't reference temporary Figma asset URLs at runtime.
-- Don't ship with `INSPECTIONS_ARE_SAMPLE = true` or `APPLICATIONS_ARE_SAMPLE = true`, and don't divide sample figures by real application totals.
+- Don't ship with `SELF_CERTIFICATION_IS_SAMPLE = true` or `APPLICATIONS_ARE_SAMPLE = true`, and don't divide sample figures by real application totals.
 - Don't show unmasked applicant names in the application list.

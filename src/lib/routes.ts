@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { INSPECTION_PERFORMANCE, SELF_CERTIFICATION } from '../data/inspections';
+import { INSPECTION_PERFORMANCE_SERVICE_IDS, SELF_CERTIFICATION } from '../data/inspections';
 
 /**
  * Hash routes, so the build stays a static page with no server rewrites.
@@ -35,7 +35,7 @@ export function parseRoute(hash: string): Route {
 /** Inspection pages that have data for this service, in display order. */
 export function inspectionLinksFor(serviceId: string): { label: string; href: string }[] {
   const links: { label: string; href: string }[] = [];
-  if (INSPECTION_PERFORMANCE.some((r) => r.serviceId === serviceId)) {
+  if (INSPECTION_PERFORMANCE_SERVICE_IDS.includes(serviceId)) {
     links.push({
       label: INSPECTION_PAGE_TITLES['inspection-performance'],
       href: inspectionHref(serviceId, 'inspection-performance'),

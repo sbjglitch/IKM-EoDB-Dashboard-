@@ -1,8 +1,8 @@
 import { INSPECTION_PERFORMANCE, SELF_CERTIFICATION } from '../data/inspections';
 import { pct } from './format';
-import { checkInspectionRow, checkSelfCertRow } from './inspections';
+import { checkInspectionRow, checkSelfCertRow, inspectionTotals } from './inspections';
 
-const perf = INSPECTION_PERFORMANCE[0];
+const general = INSPECTION_PERFORMANCE.find((r) => r.id === 'general')!;
 const cert = SELF_CERTIFICATION[0];
 
 describe('inspection data', () => {
@@ -11,27 +11,36 @@ describe('inspection data', () => {
     for (const r of SELF_CERTIFICATION) expect(checkSelfCertRow(r)).toEqual([]);
   });
 
-  it('derives the shares shown in the tables', () => {
-    expect(pct(perf.scheduled, perf.requiringInspection)).toBe('95.3%');
-    expect(pct(perf.conducted, perf.scheduled)).toBe('96.3%');
-    expect(pct(perf.conductedWithinTimeline, perf.conducted)).toBe('93.0%');
-    expect(pct(perf.conductedBeyondTimeline, perf.conducted)).toBe('7.0%');
-    expect(pct(perf.reportsWithin24h, perf.conducted)).toBe('96.5%');
-    expect(pct(perf.reportsBeyond24h, perf.conducted)).toBe('3.5%');
+  it('derives the published totals', () => {
+    expect(inspectionTotals(INSPECTION_PERFORMANCE)).toEqual({
+      requiringInspection: 643587,
+      scheduled: 349738,
+      conducted: 338116,
+      conductedWithinTimeline: 246363,
+      conductedBeyondTimeline: 77825,
+      reportsWithinTimeline: 17826677,
+      reportsBeyondTimeline: 51093220,
+    });
+  });
+
+  it('derives the shares shown in the table', () => {
+    expect(pct(general.scheduled, general.requiringInspection)).toBe('30.8%');
+    expect(pct(general.conducted, general.scheduled)).toBe('96.8%');
+    expect(pct(general.conductedWithinTimeline, general.conducted)).toBe('68.5%');
+    expect(pct(general.conductedBeyondTimeline, general.conducted)).toBe('22.2%');
+    const t = inspectionTotals(INSPECTION_PERFORMANCE);
+    expect(pct(t.scheduled, t.requiringInspection)).toBe('54.3%');
+    expect(pct(t.conductedWithinTimeline, t.conducted)).toBe('72.9%');
     expect(pct(cert.exemptedSelfCertification, cert.enterprisesUnderRegime)).toBe('23.3%');
-    expect(pct(cert.exemptedThirdParty, cert.enterprisesUnderRegime)).toBe('14.7%');
   });
 
   it('reports each broken rule', () => {
-    expect(checkInspectionRow({ ...perf, conducted: perf.scheduled + 1 })).toEqual(
-      expect.arrayContaining([
-        'conducted exceeds scheduled',
-        'within + beyond timeline does not equal conducted',
-        'reports within + beyond 24 hours does not equal conducted',
-      ]),
-    );
-    expect(checkInspectionRow({ ...perf, scheduled: perf.requiringInspection + 1 })).toContain(
+    expect(checkInspectionRow({ ...general, conducted: general.scheduled + 1 })).toContain('conducted exceeds scheduled');
+    expect(checkInspectionRow({ ...general, scheduled: general.requiringInspection + 1 })).toContain(
       'scheduled exceeds requiring inspection',
+    );
+    expect(checkInspectionRow({ ...general, conductedBeyondTimeline: general.conducted })).toContain(
+      'within + beyond timeline exceeds conducted',
     );
     expect(checkSelfCertRow({ ...cert, exemptedThirdParty: cert.enterprisesUnderRegime })).toEqual([
       'exemptions exceed enterprises under the inspection regime',
